@@ -8,7 +8,7 @@ using UniRx.Triggers;
 namespace ErgoSum.States {
 	public class Damage : PawnStateBehaviour {
 		[SerializeField]private float _damageThreshold;
-		protected override void OnStateEnter() {
+		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 			AddStreams(
 				Pawn.RigidBody.OnCollisionEnterAsObservable()
 					.Select(collision => collision.impulse.magnitude - _damageThreshold)

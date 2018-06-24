@@ -4,7 +4,7 @@ using UnityEngine;
 using ErgoSum.Utilities;
 
 namespace ErgoSum {
-	public abstract class PawnStateBehaviour : LogicalStateBehaviour {
+	public abstract class PawnStateBehaviour : StateMachineBehaviour {
 		public Pawn Pawn {
 			get { return _pawn; }
 			set {
@@ -23,7 +23,7 @@ namespace ErgoSum {
 		protected void AddStreams(params IDisposable[] streams) {
 			foreach (IDisposable stream in streams) { _streams.Add(stream); }
 		}
-		protected override void OnStateExit() { _streams.ForEach(s => s.Dispose()); }
+		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) { _streams.ForEach(s => s.Dispose()); }
 		protected virtual void OnPawnAttach(Pawn pawn) { }
 		protected virtual void OnPawnDetach(Pawn pawn) { }
 		public virtual void OnDrawGizmos() { }
