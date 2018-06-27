@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0847f88b5bfd3614a89efddf6c9d13b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gravity: 50
   _maxJumpHeight: 5
   _minJumpHeight: 0.5
 --- !u!114 &114397537599398744
@@ -113,13 +114,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530375e50d97c3e4aae1ee67d0b45351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slideTime: 0.25
+  _dashTag: Dash
+  _standTag: Stand
+  _slideTime: 0.4
   _slideDistance: 5
-  _adjustSpeed: 8
-  _topCollider: {fileID: 135888853868587588, guid: 46b5a8574758151449e80164136f142d,
-    type: 2}
-  _bottomCollider: {fileID: 135888853868587588, guid: 46b5a8574758151449e80164136f142d,
-    type: 2}
+  _adjustSpeed: 2
 --- !u!114 &114402089589737086
 MonoBehaviour:
   m_ObjectHideFlags: 1

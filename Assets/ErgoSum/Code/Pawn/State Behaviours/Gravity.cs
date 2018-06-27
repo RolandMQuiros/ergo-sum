@@ -5,10 +5,10 @@ using UniRx.Triggers;
 namespace ErgoSum.States {
 	public class Gravity : PawnStateBehaviour {
 		public float Acceleration;
-		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			AddStreams(
-				Pawn.RigidBody.FixedUpdateAsObservable().Subscribe(
-					_ => Pawn.RigidBody.AddRelativeForce(Pawn.RigidBody.transform.up * Acceleration, ForceMode.Acceleration)
+				Pawn.Body.FixedUpdateAsObservable().Subscribe(
+					_ => Pawn.Body.AddRelativeForce(Pawn.Body.transform.up * Acceleration, ForceMode.Acceleration)
 				)
 			);
 		}

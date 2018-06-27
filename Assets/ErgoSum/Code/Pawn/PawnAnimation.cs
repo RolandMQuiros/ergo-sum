@@ -17,7 +17,7 @@ namespace ErgoSum {
 		private void Start() {
 			Animator animator = GetComponent<Animator>();
 
-			Vector3 up = _pawn.RigidBody.transform.up;			
+			Vector3 up = _pawn.Body.transform.up;			
 			
 			float speed = 0f;
 			Vector3 facingDirection = Vector3.zero;
@@ -56,7 +56,7 @@ namespace ErgoSum {
 			float targetAimX = 0f;
 
 			this.UpdateAsObservable().Subscribe(_ => {
-				up = _pawn.RigidBody.transform.up;
+				up = _pawn.Body.transform.up;
 				Vector3 right = Vector3.Cross(aimDirection, projectedAim);
 				
 				targetAimX = Vector3.SignedAngle(facingDirection, projectedAim, up);
@@ -79,7 +79,7 @@ namespace ErgoSum {
 				animator.SetFloat("Aim Y", aimY);
 				animator.SetFloat("Speed", speed);
 				animator.SetBool("Is Grounded", isGrounded);
-				animator.SetFloat("Air Speed", Vector3.Dot(_pawn.RigidBody.velocity, up));
+				animator.SetFloat("Air Speed", Vector3.Dot(_pawn.Body.velocity, up));
 			});
 
 			this.OnAnimatorIKAsObservable().Subscribe(_ => {

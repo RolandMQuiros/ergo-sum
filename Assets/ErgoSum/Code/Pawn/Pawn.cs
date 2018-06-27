@@ -11,19 +11,15 @@ namespace ErgoSum {
 	public class Pawn : MonoBehaviour {
 		public IntReactiveProperty Health;
 		public PawnController Controller { get; private set; }
-		public Rigidbody RigidBody { get { return _rigidBody; } }
+		public Rigidbody Body { get { return _body; } }
+		public Animator Animator { get { return _animator; } }
 		public PawnMotor Motor { get { return _motor; } }
-		public float Gravity { get { return _gravity; } }
-		public float PoisedMass { get { return _poisedMass; } }
-		public float StunnedMass { get { return _stunnedMass; } }
 
 		#region Editor Fields
-		[SerializeField]private Rigidbody _rigidBody;
-		[SerializeField]private float _gravity = -50f;
+		[SerializeField]private Rigidbody _body;
+		[SerializeField]private Animator _animator;
 		[SerializeField]private float _groundCheck;
 		[SerializeField]private float _groundCheckRadius;
-		[SerializeField]private float _poisedMass = 50f;
-		[SerializeField]private float _stunnedMass = 10f;
 		#endregion
 		private Animator _stateMachine;
 		private PawnMotor _motor;
@@ -34,12 +30,12 @@ namespace ErgoSum {
 			Controller = GetComponent<PawnController>();
 			_stateMachine = GetComponent<Animator>();
 			_states = _stateMachine.GetBehaviours<PawnStateBehaviour>();
-			foreach (var state in _states) { state.Pawn = this; }
 		}
 
 		private void Start() {
-			_rigidBody = _rigidBody ?? GetComponentInChildren<Rigidbody>();
-			_motor = _rigidBody.GetComponent<PawnMotor>();
+			_body = _body ?? GetComponentInChildren<Rigidbody>();
+			_motor = _body.GetComponent<PawnMotor>();
+			foreach (var state in _states) { state.Pawn = this; }
 		}
 
 		private void OnDrawGizmos() {
@@ -47,12 +43,12 @@ namespace ErgoSum {
 				foreach (var state in _states) { state.OnDrawGizmos(); }
 			}
 			Gizmos.color = IsGrounded() ? Color.red : Color.white;
-			Gizmos.DrawWireSphere(RigidBody.position - _groundCheck * RigidBody.transform.up, _groundCheckRadius);
+			Gizmos.DrawWireSphere(Body.position - _groundCheck * Body.transform.up, _groundCheckRadius);
 		}
 		#endregion
 
 		public bool IsGrounded() {
-			return Physics.OverlapSphere(RigidBody.position - _groundCheck * RigidBody.transform.up, _groundCheckRadius, ~(1 << RigidBody.gameObject.layer)).Any();
+			return Physics.OverlapSphere(Body.position - _groundCheck * Body.transform.up, _groundCheckRadius, ~(1 << Body.gameObject.layer)).Any();
 		}
 	}
 

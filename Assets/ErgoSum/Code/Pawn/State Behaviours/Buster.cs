@@ -12,7 +12,7 @@ namespace ErgoSum {
         [SerializeField]private float _halfChargeTime = 1f;
         [SerializeField]private float _fullChargeTime = 2f;
 
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
             AddStreams(
                 // Fire lemon
                 Pawn.Controller.Aim.Where(unit => unit.FireStart)
