@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using UniRx;
 
 namespace ErgoSum {
 	public abstract class AimingMethod : MonoBehaviour {
-		public abstract Vector3 Direction { get; }
-		public abstract Vector3 Source { get; }
+		public abstract IObservable<PawnAimUnit> Aim { get; }
 	}
 }

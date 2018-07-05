@@ -20,4 +20,9 @@ namespace ErgoSum {
         public bool Down;
         public bool Release;
     }
+
+    public struct PawnCrouchUnit {
+        public bool Start;
+        public bool End;
+    }
 }

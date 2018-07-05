@@ -6,6 +6,7 @@ using UniRx.Triggers;
 namespace ErgoSum {
 	public class KeyboardPawnController : PawnController {
 		public override IObservable<PawnMoveUnit> Movement { get { return _movementStream; } }
+		public override IObservable<PawnCrouchUnit> Crouch { get { return _crouchStream; } }
 		public override IObservable<PawnAimUnit> Aim { get { return _aimStream; } }
 		public override IObservable<PawnJumpUnit> Jump { get { return _jumpStream; } }
 		
@@ -21,6 +22,7 @@ namespace ErgoSum {
 		[SerializeField]private string _viewHorizontalAxis;
 		[SerializeField]private string _viewVerticalAxis;
 		[SerializeField]private string _primaryFire;
+		[SerializeField]private string _crouchButton;
 		[SerializeField]private string _jumpButton;
 		[SerializeField]private string _dashButton;
 		[SerializeField]private Vector2 _viewSensitivity = Vector2.one;
@@ -28,9 +30,9 @@ namespace ErgoSum {
 		#endregion
 
 		private IObservable<PawnMoveUnit> _movementStream;
+		private IObservable<PawnCrouchUnit> _crouchStream;
 		private IObservable<PawnAimUnit> _aimStream;
 		private IObservable<PawnJumpUnit> _jumpStream;
-		private Vector2 _aimEulers;
 
 		#region MonoBehaviour
 		private void Awake() {
@@ -42,29 +44,43 @@ namespace ErgoSum {
 
 			_movementStream = moveInputStream
 				// Only capture when movement is being applied
-				.Where(movement => movement != Vector2.zero)
 				.Select(movement => new PawnMoveUnit() {
 					Direction = Vector3.ProjectOnPlane(_camera.forward, _body.transform.up).normalized * movement.y +
 						Vector3.ProjectOnPlane(_camera.right, _body.transform.up).normalized * movement.x,
 					DashStart = Input.GetButtonDown(_dashButton),
 					DashEnd = Input.GetButtonUp(_dashButton)
 				});
+			
+			_crouchStream = this.UpdateAsObservable()
+				.Select(_ => new PawnCrouchUnit {
+					Start = Input.GetButtonDown(_crouchButton),
+					End = Input.GetButtonUp(_crouchButton)
+				})
+				.Where(unit => unit.Start ^ unit.End);
+
+			Vector2 aimAxes = Vector2.zero;
 			_aimStream = this.UpdateAsObservable()
-				.Select((x, y) => new PawnAimUnit() {
-					Eulers = new Vector2(Input.GetAxis(_viewHorizontalAxis), -Input.GetAxis(_viewVerticalAxis)),
+				.Select(mouseDelta => new {
+					Axes = new Vector2(Input.GetAxis(_viewHorizontalAxis), -Input.GetAxis(_viewVerticalAxis)),
 					FireStart = Input.GetButtonDown(_primaryFire),
 					FireEnd = Input.GetButtonUp(_primaryFire)
 				})
-				.Where(unit => unit.Eulers != Vector3.zero || (unit.FireStart ^ unit.FireEnd))
-				.Select(unit => {
-					Vector2 aimAxes = unit.Eulers * _viewSensitivity * Time.deltaTime;
-					_aimEulers += aimAxes;
-					_aimEulers.y = Mathf.Clamp(_aimEulers.y, -_verticalLimit, _verticalLimit);
-					unit.Eulers = _aimEulers;
-					unit.Direction = _aim.Direction;
-					unit.Source = _aim.Source;
-					return unit;
-				});
+				.Where(inUnit => inUnit.Axes != Vector2.zero || inUnit.FireStart ^ inUnit.FireEnd)
+				.WithLatestFrom(
+					_aim.Aim,
+					(inUnit, aimUnit) => {
+						aimUnit.Eulers = aimAxes + inUnit.Axes * _viewSensitivity * Time.deltaTime;
+						aimUnit.Eulers.y = Mathf.Clamp(aimUnit.Eulers.y, -_verticalLimit, _verticalLimit);
+						aimUnit.FireStart = inUnit.FireStart;
+						aimUnit.FireEnd = inUnit.FireEnd;
+						return aimUnit;
+					}
+				);
+			_aimStream.Subscribe(unit => {
+				aimAxes.x = unit.Eulers.x;
+				aimAxes.y = unit.Eulers.y;
+				_cameraPivot.rotation = Quaternion.Euler(unit.Eulers.y,  unit.Eulers.x, 0f);
+			});
 
 			_jumpStream = this.UpdateAsObservable()
 				.Select(x => new PawnJumpUnit() {
@@ -72,10 +88,6 @@ namespace ErgoSum {
 					Release = Input.GetButtonUp(_jumpButton)
 				})
 				.Where(unit => unit.Down || unit.Release);
-			
-			_aimStream.Subscribe(unit => {
-				_cameraPivot.rotation = Quaternion.Euler(unit.Eulers.y,  unit.Eulers.x, 0f);
-			});
 		}
 		#endregion
 	}

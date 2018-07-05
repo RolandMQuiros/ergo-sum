@@ -13,13 +13,14 @@ namespace ErgoSum.UI {
 			_display.SetActive(false);
 			_camera = _camera ?? Camera.main;
 			this.UpdateAsObservable()
+				.WithLatestFrom(_autoAim.Target, (_, target) => target)
 				.Subscribe(
-					_ => {
-						if (_autoAim.Target == null) {
+					target => {
+						if (target == null) {
 							_display.SetActive(false);
 						} else {
 							_display.SetActive(true);
-							rectTransform.position = _camera.WorldToScreenPoint(_autoAim.Target.position);
+							rectTransform.position = _camera.WorldToScreenPoint(target.position);
 						}
 					}
 				);

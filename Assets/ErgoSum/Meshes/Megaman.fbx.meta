@@ -244,6 +244,14 @@ ModelImporter:
     7400064: Skeleton|JumpRise
     7400066: Skeleton|Start Slide
     7400068: Skeleton|Slide
+    7400070: Skeleton|Duck
+    7400072: Skeleton|DuckWalk
+    7400074: Skeleton|SlideStart
+    7400076: Skeleton|Slide
+    7400078: Skeleton|RollSlide
+    7400080: Skeleton|Squat
+    7400082: Skeleton|SquatWalk
+    7400084: Skeleton|SlideEnd
     9500000: //RootNode
     13700000: MegaMan
     2186277476908879412: ImportLogs
@@ -290,6 +298,17 @@ ModelImporter:
       has scale animation that will be discarded.\n\t'Thigh_R' has scale animation
       that will be discarded.\n\t'Calf_R' has scale animation that will be discarded.\n\t'Foot_R'
       has scale animation that will be discarded.\n\t'Toes_R' has scale animation
+      that will be discarded.\n\nClip 'Skeleton|RollSlide' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'Thigh_L' has scale animation that will be
+      discarded.\n\t'Calf_L' has scale animation that will be discarded.\n\t'Foot_L'
+      has scale animation that will be discarded.\n\t'Toes_L' has scale animation
+      that will be discarded.\n\t'Thigh_R' has scale animation that will be discarded.\n\t'Calf_R'
+      has scale animation that will be discarded.\n\t'Foot_R' has scale animation
+      that will be discarded.\n\t'Toes_R' has scale animation that will be discarded.\n\t'IndexFinger_1_L'
+      has translation animation that will be discarded.\n\t'MiddleFinger_1_L' has
+      translation animation that will be discarded.\n\t'IndexFinger_1_R' has translation
+      animation that will be discarded.\n\t'MiddleFinger_1_R' has translation animation
       that will be discarded.\n\nClip 'Skeleton|Run' has import animation warnings
       that might lower retargeting quality:\nNote: Activate translation DOF on avatar
       to improve retargeting quality.\n\t'Thigh_L' has scale animation that will be
@@ -307,7 +326,13 @@ ModelImporter:
       has scale animation that will be discarded.\n\t'Toes_R' has scale animation
       that will be discarded.\n\t'IndexFinger_1_L' has translation animation that
       will be discarded.\n\t'IndexFinger_1_R' has translation animation that will
-      be discarded.\n"
+      be discarded.\n\nClip 'Skeleton|SquatWalk' has import animation warnings that
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
+      improve retargeting quality.\n\t'Calf_L' has scale animation that will be discarded.\n\t'Foot_L'
+      has scale animation that will be discarded.\n\t'Toes_L' has scale animation
+      that will be discarded.\n\t'Thigh_R' has scale animation that will be discarded.\n\t'Calf_R'
+      has scale animation that will be discarded.\n\t'Foot_R' has scale animation
+      that will be discarded.\n\t'Toes_R' has scale animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 1
@@ -1021,10 +1046,38 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Skeleton|Slide
-      takeName: Skeleton|Slide
-      firstFrame: 7.0999994
-      lastFrame: 10
+      name: Skeleton|Squat
+      takeName: Skeleton|Squat
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Skeleton|SquatWalk
+      takeName: Skeleton|SquatWalk
+      firstFrame: 0
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1032,7 +1085,91 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Skeleton|RollSlide
+      takeName: Skeleton|RollSlide
+      firstFrame: 0
+      lastFrame: 24
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Skeleton|Slide
+      takeName: Skeleton|RollSlide
+      firstFrame: 26
+      lastFrame: 28
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Skeleton|SlideEnd
+      takeName: Skeleton|RollSlide
+      firstFrame: 26
+      lastFrame: 36
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

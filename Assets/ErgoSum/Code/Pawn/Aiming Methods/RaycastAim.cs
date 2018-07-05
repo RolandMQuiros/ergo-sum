@@ -1,12 +1,13 @@
 using UnityEngine;
+using UniRx;
 
 namespace ErgoSum {
     public class RaycastAim : AimingMethod {
-        public override Vector3 Direction { get { return _direction; } }
-        public override Vector3 Source { get { return _source.position; } }
+        public override IObservable<PawnAimUnit> Aim { get { return _aim; } }
         [SerializeField]private Transform _camera;
         [SerializeField]private Transform _source;
         private Vector3 _direction;
+        private IObservable<PawnAimUnit> _aim;
 
         private void Update() {
             float sourceDistance = Vector3.Dot(_camera.position - _source.position, _camera.forward);

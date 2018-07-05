@@ -7,11 +7,16 @@ using UniRx.Triggers;
 
 namespace ErgoSum {
 	public class GroundMotor : PawnMotor {
+		public override IObservable<Vector3> Movement {
+			get { return _movement; }
+		}
+
 		[SerializeField]private string _terrainLayerName = "Terrain";
 		private IEnumerable<ContactPoint> _contacts;
 		private Rigidbody _rigidbody;
-		private Subject<Vector3> _movement = new Subject<Vector3>();
-		private void Start() {
+		private Subject<Vector3> _moves = new Subject<Vector3>();
+		private IObservable<Vector3> _movement;
+		private void Awake() {
 			_rigidbody = GetComponent<Rigidbody>();
 			int terrainLayer = LayerMask.NameToLayer(_terrainLayerName);
 
@@ -20,20 +25,20 @@ namespace ErgoSum {
 				.SelectMany(collision => collision.contacts)
 				.Where(c => c.otherCollider.gameObject.layer == terrainLayer)
 				.Buffer(this.LateUpdateAsObservable());
-			
-			_movement
+			_movement = _moves
 				.WithLatestFrom(this.FixedUpdateAsObservable(), (move, _) => move)
 				.WithLatestFrom(terrainCollisions, (move, contacts) => new { Move = move, Contacts = contacts })
-				.Subscribe(unit => {
+				.Select(unit => {
 					_contacts = unit.Contacts;
 					// Find a directon that is not being opposed by a terrain surface
 					Vector3 offset = !unit.Contacts.Any() ? unit.Move : Project(unit.Move);
 					Vector3 velocity = _rigidbody.position + offset;
-					_rigidbody.MovePosition(velocity);
+					return velocity;
 				});
+			_movement.Subscribe(velocity => _rigidbody.MovePosition(velocity));
 		}
 		public override void Move(Vector3 velocity) {
-			_movement.OnNext(velocity);
+			_moves.OnNext(velocity);
 		}
 
 		public Vector3 Project(Vector3 toProject) {
