@@ -7,9 +7,11 @@ using ErgoSum.Utilities;
 
 namespace ErgoSum {
     public class Buster : PawnStateBehaviour {
+        [Header("Prefab References")]
         [SerializeField]private GameObjectPool _lemonPool;
         [SerializeField]private GameObjectPool _halfCharge;
         [SerializeField]private GameObjectPool  _fullCharge;
+        [Header("Physics Parameters")]
         [SerializeField]private float _holsterTime = 1f;
         [SerializeField]private float _halfChargeTime = 1f;
         [SerializeField]private float _fullChargeTime = 2f;

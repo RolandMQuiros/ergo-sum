@@ -43,10 +43,12 @@ namespace ErgoSum {
 				.Select((x, y) => new Vector2(Input.GetAxis(_horizontalAxis), Input.GetAxis(_verticalAxis)));
 
 			_movementStream = moveInputStream
+				.Pairwise()
+				.Where(pair => pair.Current != Vector2.zero || pair.Previous - pair.Current != Vector2.zero)
 				// Only capture when movement is being applied
 				.Select(movement => new PawnMoveUnit() {
-					Direction = Vector3.ProjectOnPlane(_camera.forward, _body.transform.up).normalized * movement.y +
-						Vector3.ProjectOnPlane(_camera.right, _body.transform.up).normalized * movement.x,
+					Direction = Vector3.ProjectOnPlane(_camera.forward, _body.transform.up).normalized * movement.Current.y +
+						Vector3.ProjectOnPlane(_camera.right, _body.transform.up).normalized * movement.Current.x,
 					DashStart = Input.GetButtonDown(_dashButton),
 					DashEnd = Input.GetButtonUp(_dashButton)
 				});

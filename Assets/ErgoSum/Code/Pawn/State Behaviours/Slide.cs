@@ -52,6 +52,7 @@ namespace ErgoSum.States {
 				AddStreams(
 					// Initial movement
 					Pawn.Controller.Movement
+						.Where(unit => unit.Direction != Vector3.zero)
 						.Take(1)
 						.Subscribe(unit => {
 							mainDirection = unit.Direction.normalized;
