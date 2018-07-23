@@ -37,8 +37,9 @@ namespace ErgoSum.States {
 
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			if (Pawn.IsGrounded.Value) {
-				Pawn.Animator.SetBool("Dashing", true);
-				Pawn.Animator.SetBool("Firing", false);
+				Pawn.Animator.SetBool(PawnAnimationParameters.DASHING, true);
+				Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, false);
+				Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, false);
 
 				_dashCompoundCollider.SetActive(true);
 				_standCompoundCollider.SetActive(false);
@@ -101,7 +102,7 @@ namespace ErgoSum.States {
 		}
 		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 			base.OnStateExit(animator, stateInfo, layerIndex);
-			Pawn.Animator.SetBool("Dashing", false);
+			Pawn.Animator.SetBool(PawnAnimationParameters.DASHING, false);
 			_dashCompoundCollider.SetActive(false);
 			_standCompoundCollider.SetActive(true);
 		}

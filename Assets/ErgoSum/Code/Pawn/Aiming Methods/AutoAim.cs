@@ -36,7 +36,7 @@ namespace ErgoSum {
 			_aim = aimStream.Select(
 					target => new PawnAimUnit {
 						Direction = target == null ? transform.forward : (target.transform.position - _source.position).normalized,
-						Source = _source.position
+						Source = _source
 					}
 				);
 			aimStream.Subscribe(target => { Target.Value = target != null ? target.transform : null; });

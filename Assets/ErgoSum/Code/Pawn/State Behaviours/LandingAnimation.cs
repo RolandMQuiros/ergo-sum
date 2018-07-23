@@ -22,7 +22,6 @@ namespace ErgoSum.States {
 					if (dvy > _landingThreshold) { // Jumping or landing
 						crouch = dvy / _landingSpeed;
 						crouchTime = 0f;
-						Debug.Log("Jumped or Landed " + verticalSpeed);
 					}
 					if (crouch > 0f) {
 						crouchTime += Time.deltaTime;

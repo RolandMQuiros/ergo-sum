@@ -63,7 +63,7 @@ namespace ErgoSum {
 			Vector2 aimAxes = Vector2.zero;
 			_aimStream = this.UpdateAsObservable()
 				.Select(mouseDelta => new {
-					Axes = new Vector2(Input.GetAxis(_viewHorizontalAxis), -Input.GetAxis(_viewVerticalAxis)),
+					Axes = new Vector2(-Input.GetAxis(_viewVerticalAxis), Input.GetAxis(_viewHorizontalAxis)),
 					FireStart = Input.GetButtonDown(_primaryFire),
 					FireEnd = Input.GetButtonUp(_primaryFire)
 				})
@@ -72,7 +72,7 @@ namespace ErgoSum {
 					_aim.Aim,
 					(inUnit, aimUnit) => {
 						aimUnit.Eulers = aimAxes + inUnit.Axes * _viewSensitivity * Time.deltaTime;
-						aimUnit.Eulers.y = Mathf.Clamp(aimUnit.Eulers.y, -_verticalLimit, _verticalLimit);
+						aimUnit.Eulers.x = Mathf.Clamp(aimUnit.Eulers.x, -_verticalLimit, _verticalLimit);
 						aimUnit.FireStart = inUnit.FireStart;
 						aimUnit.FireEnd = inUnit.FireEnd;
 						return aimUnit;
@@ -81,7 +81,7 @@ namespace ErgoSum {
 			_aimStream.Subscribe(unit => {
 				aimAxes.x = unit.Eulers.x;
 				aimAxes.y = unit.Eulers.y;
-				_cameraPivot.rotation = Quaternion.Euler(unit.Eulers.y,  unit.Eulers.x, 0f);
+				_cameraPivot.rotation = Quaternion.Euler(unit.Eulers.x,  unit.Eulers.y, 0f);
 			});
 
 			_jumpStream = this.UpdateAsObservable()

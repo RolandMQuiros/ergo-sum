@@ -11,7 +11,7 @@ namespace ErgoSum {
     public struct PawnAimUnit {
         public Vector3 Eulers;
         public Vector3 Direction;
-        public Vector3 Source;
+        public Transform Source;
         public bool FireStart;
         public bool FireEnd;
     }

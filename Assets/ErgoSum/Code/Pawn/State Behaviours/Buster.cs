@@ -1,42 +1,93 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UniRx;
+using UniRx.Diagnostics;
 using UniRx.Triggers;
 using ErgoSum.Utilities;
 
-namespace ErgoSum {
+
+namespace ErgoSum.States {
     public class Buster : PawnStateBehaviour {
-        [Header("Prefab References")]
-        [SerializeField]private GameObjectPool _lemonPool;
-        [SerializeField]private GameObjectPool _halfCharge;
-        [SerializeField]private GameObjectPool  _fullCharge;
+        public struct FireUnit {
+            public PawnAimUnit Aim;
+            public BusterCharge.ChargeUnit Charge;
+        }
+
+        public IObservable<FireUnit> Fire { get; private set; }
+
         [Header("Physics Parameters")]
         [SerializeField]private float _holsterTime = 1f;
-        [SerializeField]private float _halfChargeTime = 1f;
-        [SerializeField]private float _fullChargeTime = 2f;
+        [SerializeField]private float _unholsterTime = 0.1f;
 
         private Vector3 _aimDirection;
         private Vector3 _projectedAim;
         private float _currentAimX;
-
+        
         public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
-            AddLogicStreams(stateMachine);
-            AddAnimationStreams();
-        }
+            var charge = stateMachine.GetBehaviour<BusterCharge>();
 
-        private void AddLogicStreams(Animator stateMachine) {
+            var fireInput = Pawn.Controller.Aim
+                .Where(unit => unit.FireStart || unit.FireEnd)
+                .WithLatestFrom(
+                    charge.Charge,
+                    (unit, level) => new FireUnit {
+                        Aim = unit,
+                        Charge = level
+                    }
+                )
+                .Where(unit => (unit.Charge.Level > 0 && unit.Aim.FireEnd) ||
+                    (unit.Charge.Level == 0 && unit.Aim.FireStart));
+
+            var holsterTime = TimeSpan.FromSeconds(Time.timeScale * _holsterTime);
+            var unholsterTime = TimeSpan.FromSeconds(Time.timeScale * _unholsterTime);
+
+            // Everything in this #region is to create a firing stream that delays the first shot after unholstering weapon
+            #region First Shot Delay
+            // Emits after some time passes without shooting. Used to play the holstering animation.
+            var holster = fireInput.Throttle(holsterTime);
+
+            // Emits on the first fire event after holstering
+            var draw = fireInput.Select(unit => true).Delay(unholsterTime)
+                .Merge(holster.Select(unit => false))
+                .DistinctUntilChanged(); // Emit only when there's a change (from holstered to unholstered)
+            
+            // Buffers the fire inputs received while unholstering weapon
+            var drawFire = fireInput.Sample(draw.Where(drawn => drawn));
+
+            // Omits the fire inputs received while unholstering weapon
+            var remainingFire = fireInput
+                .CombineLatest(draw, (unit, drawn) => new {
+                    Unit = unit,
+                    Drawn = drawn
+                })
+                .Where(fire => fire.Drawn)
+                .Select(fire => fire.Unit);
+            
+            // Combine the delayed first shot with the remaining shots
+            Fire = drawFire.Merge(remainingFire);
+            #endregion
+
             AddStreams(
-                // Fire lemon
-                Pawn.Controller.Aim.Where(unit => unit.FireStart)
-                    .Subscribe(unit => {
-                        GameObject lemon = _lemonPool.Get();
-                        lemon.transform.position = unit.Source;
-                        lemon.transform.rotation = Quaternion.Euler(unit.Eulers);
-                        lemon.SetActive(true);
-                        lemon.GetComponent<Rigidbody>().AddForce(unit.Direction * 50f, ForceMode.VelocityChange);
-                    })
+                // Aiming animation
+                fireInput.Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, true); }),
+                // Holstering animation
+                holster.Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, false); }),
+                // Fire animation
+                Pawn.UpdateAsObservable().Select(_ => false)
+                    .Merge(fireInput.Select(_ => true))
+                    .Subscribe(firing => {
+                        Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, firing);
+                    }),
+                // Spawn bullets
+                Fire.Subscribe(unit => {
+                    var bullet = unit.Charge.Pool.Get().GetComponent<Bullet>();
+                    bullet.Fire(Pawn.gameObject, unit.Aim.Source.position, Quaternion.Euler(unit.Aim.Eulers));
+                })
             );
+
+            AimingAnimationStreams();
         }
 
         protected override void OnPawnAttach(Pawn pawn) {
@@ -45,20 +96,14 @@ namespace ErgoSum {
             _currentAimX = 0f;
         }
         
-        private void AddAnimationStreams() {
+        private void AimingAnimationStreams() {
             AddStreams(
-                Pawn.Controller.Aim.Subscribe(unit => {
-                    Vector3 up = Pawn.Body.transform.up;
-                    _aimDirection = unit.Direction;
-                    _projectedAim = Vector3.ProjectOnPlane(_aimDirection, up);
-                    
-                    if (unit.FireStart) {
-                        Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, true);
-                    }
-                }),
-                Pawn.Controller.Aim.Where(unit => unit.FireStart)
-                    .Throttle(TimeSpan.FromSeconds(Time.timeScale * _holsterTime))
-                    .Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, false); }),
+                Pawn.Controller.Aim
+                    .Subscribe(unit => {
+                        Vector3 up = Pawn.Body.transform.up;
+                        _aimDirection = unit.Direction;
+                        _projectedAim = Vector3.ProjectOnPlane(_aimDirection, up);
+                    }),
                 Pawn.UpdateAsObservable()
                     .Subscribe(moveUnit => {
                         Vector3 up = Pawn.Body.transform.up;
