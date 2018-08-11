@@ -83,7 +83,7 @@ namespace ErgoSum.States {
                 // Spawn bullets
                 Fire.Subscribe(unit => {
                     var bullet = unit.Charge.Pool.Get().GetComponent<Bullet>();
-                    bullet.Fire(Pawn.gameObject, unit.Aim.Source.position, Quaternion.Euler(unit.Aim.Eulers));
+                    bullet.Fire(Pawn, unit.Aim.Source.position, Quaternion.Euler(unit.Aim.Eulers));
                 })
             );
 

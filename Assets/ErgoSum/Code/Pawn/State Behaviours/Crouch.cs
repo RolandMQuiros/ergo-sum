@@ -7,10 +7,10 @@ namespace ErgoSum {
             AddStreams(
                 Pawn.Controller.Crouch
                     .Where(unit => unit.Start)
-                    .Subscribe(_ => { Pawn.Animator.SetFloat("Crouching", 1f); }),
+                    .Subscribe(_ => { Pawn.Animator.SetFloat(PawnAnimationParameters.CROUCHING, 1f); }),
                 Pawn.Controller.Crouch
                     .Where(unit => unit.End)
-                    .Subscribe(_ => { Pawn.Animator.SetFloat("Crouching", 0f); })
+                    .Subscribe(_ => { Pawn.Animator.SetFloat(PawnAnimationParameters.CROUCHING, 0f); })
             );
         }
     }

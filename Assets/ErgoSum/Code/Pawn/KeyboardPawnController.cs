@@ -39,19 +39,21 @@ namespace ErgoSum {
 			Cursor.lockState = CursorLockMode.Locked;
 			_camera = _camera ?? Camera.main.transform;
 			
-			var moveInputStream = this.FixedUpdateAsObservable()
+			var moveInputStream = this.UpdateAsObservable()
 				.Select((x, y) => new Vector2(Input.GetAxis(_horizontalAxis), Input.GetAxis(_verticalAxis)));
 
 			_movementStream = moveInputStream
 				.Pairwise()
-				.Where(pair => pair.Current != Vector2.zero || pair.Previous - pair.Current != Vector2.zero)
 				// Only capture when movement is being applied
+				.Where(pair => pair.Current != Vector2.zero || pair.Previous - pair.Current != Vector2.zero)
 				.Select(movement => new PawnMoveUnit() {
 					Direction = Vector3.ProjectOnPlane(_camera.forward, _body.transform.up).normalized * movement.Current.y +
 						Vector3.ProjectOnPlane(_camera.right, _body.transform.up).normalized * movement.Current.x,
 					DashStart = Input.GetButtonDown(_dashButton),
 					DashEnd = Input.GetButtonUp(_dashButton)
 				});
+
+			_movementStream.Where(m => m.DashStart).Subscribe(_ => { Debug.Log("Dahsed"); });
 			
 			_crouchStream = this.UpdateAsObservable()
 				.Select(_ => new PawnCrouchUnit {

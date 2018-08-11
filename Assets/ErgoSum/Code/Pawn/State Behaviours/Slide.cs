@@ -11,10 +11,9 @@ namespace ErgoSum.States {
 		[SerializeField]private string _dashTag;
 		[SerializeField]private string _standTag;
 		[Header("Physics values")]
-		[SerializeField]private float _rotationSpeed;
+		[SerializeField]private float _slideSpeed;
 		[SerializeField]private float _slideTime;
-		[SerializeField]private float _slideDistance;
-		[SerializeField]private AnimationCurve  _slideCurve;
+		[SerializeField]private float _rotationSpeed;
 		[SerializeField]private float _adjustSpeed;
 
 		private GameObject _dashCompoundCollider;
@@ -46,7 +45,6 @@ namespace ErgoSum.States {
 
 				Vector3 mainDirection = new Vector3();
 				Vector3 right = Vector3.right;
-				float slideMagnitude = _slideDistance / _slideTime;
 				float slideTimer = 0f;
 				Quaternion mainRotation = Quaternion.identity;
 
@@ -59,34 +57,31 @@ namespace ErgoSum.States {
 							mainDirection = unit.Direction.normalized;
 							mainRotation = Quaternion.LookRotation(mainDirection, Pawn.Body.transform.up);
 						}),
-					Pawn.Body.FixedUpdateAsObservable()
+					Pawn.Controller.Jump.Where(unit => unit.Release)
+						.Subscribe(unit => { stateMachine.SetBool(PawnStateParameters.Dash, false); }),
+					Pawn.Body.UpdateAsObservable()
 						.Select(_ => Vector3.zero)
 						.Merge(
 							Pawn.Controller.Movement
 								.Select(unit => Vector3.Dot(unit.Direction, mainDirection) > 0f ? Vector3.ProjectOnPlane(unit.Direction, mainDirection) : unit.Direction)
-							)
+						)
 						.Subscribe(adjust => {
-							if (!Pawn.IsGrounded.Value) {
-								stateMachine.SetBool("Dash", false);
-							}
 							slideTimer += Time.deltaTime;
-							
-							float curve = 1f;//_slideCurve.Evaluate(slideTimer / _slideTime);
-							Vector3 velocity = curve * (mainDirection * slideMagnitude + adjust * _adjustSpeed);
+							Vector3 velocity = mainDirection * _slideSpeed + adjust * _adjustSpeed;
 							Pawn.Motor.Move(velocity * Time.deltaTime);
-							
 							Pawn.Animator.transform.rotation = Quaternion.Lerp(
 								Pawn.Animator.transform.rotation,
 								mainRotation,
 								_rotationSpeed * Time.deltaTime
 							);
+							if (!Pawn.IsGrounded.Value) { stateMachine.SetBool(PawnStateParameters.Dash, false); }
 						}),
 					_dashSustainTrigger.OnTriggerStayAsObservable()
 						.Buffer(Pawn.Body.FixedUpdateAsObservable())
 						.SkipUntil(Observable.Timer(TimeSpan.FromSeconds(Time.timeScale * _slideTime)))
 						.Subscribe(colliders => {
 							if (!colliders.Any()) {
-								stateMachine.SetBool("Dash", false);
+								stateMachine.SetBool(PawnStateParameters.Dash, false);
 							}
 						})
 				);

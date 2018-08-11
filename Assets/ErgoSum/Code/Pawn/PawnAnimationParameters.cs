@@ -9,6 +9,7 @@ namespace ErgoSum {
         public const string FIRING = "Firing";
         public const string AIMING = "Aiming";
         public const string CHARGE = "Charge";
+        public const string DODGING = "Dodge";
         public const string DASHING = "Dashing";
     }
 }

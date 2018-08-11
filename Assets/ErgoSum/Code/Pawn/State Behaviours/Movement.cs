@@ -12,8 +12,8 @@ namespace ErgoSum.States {
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
             AddStreams(
                 Pawn.Controller.Movement.Subscribe(unit => {
-					if (unit.DashStart) {
-						stateMachine.SetBool("Dash", true);
+					if (Pawn.IsGrounded.Value && unit.DashStart) {
+						stateMachine.SetBool(PawnStateParameters.Dash, true);
 					} else {
                         Pawn.Motor.Move(this._speed * unit.Direction * Time.deltaTime);
 					}

@@ -12,6 +12,7 @@ namespace ErgoSum {
 	public class Pawn : MonoBehaviour {
 		public IntReactiveProperty Health { get; private set; }
 		public BoolReactiveProperty IsGrounded { get; private set; }
+		public IObservable<PierceUnit> Pierced { get { return _pierced; } }
 		public PawnController Controller { get; private set; }
 		public Rigidbody Body { get { return _body; } }
 		public Animator Animator { get { return _animator; } }
@@ -26,6 +27,7 @@ namespace ErgoSum {
 		#endregion
 		private Animator _stateMachine;
 		private IEnumerable<PawnStateBehaviour> _states;
+		private Subject<PierceUnit> _pierced = new Subject<PierceUnit>();
 
 		#region MonoBehaviour
 		private void Awake() {
@@ -36,17 +38,23 @@ namespace ErgoSum {
 			Health = new IntReactiveProperty(_initialHealth);
 			IsGrounded = new BoolReactiveProperty();
 
-			_groundCheck.OnTriggerStayAsObservable().Select(_ => true)
-				.Merge(_groundCheck.OnTriggerExitAsObservable().Select(_ => false))
-				.Subscribe(collided => { IsGrounded.Value = collided; });
+			int collisions = 0;
+			_groundCheck.OnTriggerStayAsObservable().Subscribe(collided => { collisions++; });
+			_groundCheck.FixedUpdateAsObservable().Subscribe(_ => {
+				IsGrounded.Value = collisions > 0;
+				collisions = 0;
+			});
 		}
-
 		private void Start() {
 			_body = _body ?? GetComponentInChildren<Rigidbody>();
 			_motor = _motor ?? _body.GetComponent<PawnMotor>();
 			foreach (var state in _states) { state.Pawn = this; }
 		}
 		#endregion
+
+		public void Pierce(PierceUnit unit) {
+			_pierced.OnNext(unit);
+		}
 	}
 
 }

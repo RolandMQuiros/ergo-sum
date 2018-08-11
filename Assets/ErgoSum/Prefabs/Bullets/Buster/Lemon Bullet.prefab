@@ -11,9 +11,28 @@ Prefab:
   m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1984794689222054}
   m_IsPrefabAsset: 1
---- !u!1 &1573422385758432
+--- !u!1 &1115712568419044
 GameObject:
   m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4004336314009404}
+  - component: {fileID: 135690586929307900}
+  - component: {fileID: 54760050480726428}
+  - component: {fileID: 114902440157443720}
+  - component: {fileID: 114508341309342142}
+  m_Layer: 0
+  m_Name: Lemon Body
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1573422385758432
+GameObject:
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
@@ -38,11 +57,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4788463482454570}
-  - component: {fileID: 54826358767275966}
-  - component: {fileID: 135245533828767440}
-  - component: {fileID: 114404283807272322}
-  - component: {fileID: 114370341103637314}
-  - component: {fileID: 114428135019078518}
+  - component: {fileID: 114636927741436688}
   m_Layer: 0
   m_Name: Lemon Bullet
   m_TagString: Untagged
@@ -50,17 +65,31 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4004336314009404
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1115712568419044}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4707657760124604}
+  m_Father: {fileID: 4788463482454570}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4707657760124604
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1573422385758432}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4788463482454570}
+  m_Father: {fileID: 4004336314009404}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!4 &4788463482454570
@@ -73,7 +102,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4707657760124604}
+  - {fileID: 4004336314009404}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -119,12 +148,12 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1573422385758432}
   m_Mesh: {fileID: 4300002, guid: f6bf6988f6141f7488aaae8a8e0b7ee7, type: 3}
---- !u!54 &54826358767275966
+--- !u!54 &54760050480726428
 Rigidbody:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1984794689222054}
+  m_GameObject: {fileID: 1115712568419044}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -152,32 +181,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114370341103637314
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1984794689222054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ce893e420595ea479ae1a7d76990cda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Velocity: {x: 0, y: 0, z: -180}
-  IsRelative: 1
---- !u!114 &114404283807272322
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1984794689222054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ca689dafb2f2ad4dbecfeb8acdbf76d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Velocity: {x: 0, y: 0, z: 50}
-  IsRelative: 1
 --- !u!114 &114408343704444812
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -190,7 +193,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Offset: {x: -0.15590894, y: 0}
---- !u!114 &114428135019078518
+--- !u!114 &114508341309342142
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1115712568419044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ce893e420595ea479ae1a7d76990cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Velocity: {x: 0, y: 0, z: -180}
+  IsRelative: 1
+--- !u!114 &114636927741436688
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,22 +214,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 1984794689222054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70c2924b17e6e60439fe47a9eb04e300, type: 3}
+  m_Script: {fileID: 11500000, guid: 57d63af0c81e3a34eb65b55ed73dcde2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
+  _damage: 3
   _penetration: 1
-  _pierced:
+  _pierceEvent:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: ErgoSum.Bullet+BulletEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
---- !u!135 &135245533828767440
+  _scanDistance: 50
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _facade: {fileID: 4004336314009404}
+--- !u!114 &114902440157443720
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1115712568419044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ca689dafb2f2ad4dbecfeb8acdbf76d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Velocity: {x: 0, y: 0, z: 100}
+  IsRelative: 1
+--- !u!135 &135690586929307900
 SphereCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1984794689222054}
+  m_GameObject: {fileID: 1115712568419044}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1

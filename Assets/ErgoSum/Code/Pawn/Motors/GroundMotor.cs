@@ -16,6 +16,8 @@ namespace ErgoSum {
 		private Rigidbody _rigidbody;
 		private Subject<Vector3> _moves = new Subject<Vector3>();
 		private IObservable<Vector3> _movement;
+
+		[SerializeField]private Vector3[] _contactNormals;
 		private void Awake() {
 			_rigidbody = GetComponent<Rigidbody>();
 			int terrainLayer = LayerMask.NameToLayer(_terrainLayerName);
@@ -24,12 +26,13 @@ namespace ErgoSum {
 				.Merge(_rigidbody.OnCollisionEnterAsObservable())
 				.SelectMany(collision => collision.contacts)
 				.Where(c => c.otherCollider.gameObject.layer == terrainLayer)
-				.Buffer(this.LateUpdateAsObservable());
+				.Buffer(this.UpdateAsObservable());
+				
 			_movement = _moves
-				.WithLatestFrom(this.FixedUpdateAsObservable(), (move, _) => move)
 				.WithLatestFrom(terrainCollisions, (move, contacts) => new { Move = move, Contacts = contacts })
 				.Select(unit => {
 					_contacts = unit.Contacts;
+					_contactNormals = unit.Contacts.Select(c => c.normal.normalized).ToArray();
 					// Find a directon that is not being opposed by a terrain surface
 					Vector3 offset = !unit.Contacts.Any() ? unit.Move : Project(unit.Move);
 					Vector3 velocity = _rigidbody.position + offset;
@@ -48,11 +51,11 @@ namespace ErgoSum {
 					(projected, contact) => {
 						// If we're moving into a surface, we want to project the movement direction on it, so we don't cause physics jitters from
 						// overlaps
-						if (Vector3.Dot(contact.normal, _rigidbody.transform.up) > 0f) {
+						if (Vector3.Dot(contact.normal, _rigidbody.transform.up) > 0.3f) {
 							// If surface is a floor, move along it at full movement speed
 							return Vector3.ProjectOnPlane(projected, contact.normal).normalized * projected.magnitude;
 						} else if (Vector3.Dot(toProject, contact.normal) < 0f) {
-							// If the surface is a wall, move along it
+							// If the surface is a wall, and we're moving into it, move along it instead
 							return Vector3.ProjectOnPlane(projected, contact.normal);
 						} else {
 							// If we're moving away from the surface, no need for projections

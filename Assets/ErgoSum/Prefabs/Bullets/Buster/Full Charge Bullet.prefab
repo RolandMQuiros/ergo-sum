@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 135927127079414404}
   - component: {fileID: 114057303242052410}
   - component: {fileID: 114388391207046934}
-  - component: {fileID: 114504697553816198}
+  - component: {fileID: 114912787867769016}
   m_Layer: 0
   m_Name: Full Charge Bullet
   m_TagString: Untagged
@@ -71,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1330400656969910}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_Children: []
   m_Father: {fileID: 4256444189596204}
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ca689dafb2f2ad4dbecfeb8acdbf76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Velocity: {x: 0, y: 0, z: 50}
+  Velocity: {x: 0, y: 0, z: 30}
   IsRelative: 1
 --- !u!114 &114388391207046934
 MonoBehaviour:
@@ -178,24 +178,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Velocity: {x: 0, y: 0, z: -180}
   IsRelative: 1
---- !u!114 &114504697553816198
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1565854065080932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70c2924b17e6e60439fe47a9eb04e300, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damage: 6
-  _penetration: 10
-  _pierced:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: ErgoSum.Bullet+BulletEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
 --- !u!114 &114785286042379410
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -208,6 +190,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Offset: {x: -0.15590894, y: 0}
+--- !u!114 &114912787867769016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1565854065080932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57374a7bce2562742abd4be54e3f5aab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 12
+  _penetration: 20
+  _pierceEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: ErgoSum.Bullet+BulletEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!135 &135927127079414404
 SphereCollider:
   m_ObjectHideFlags: 1
