@@ -31,8 +31,8 @@ namespace ErgoSum.States {
 							_rotationSpeed * Time.deltaTime
 						);
 
-						Pawn.Animator.SetFloat(PawnAnimationParameters.SPEED, speed);
-						Pawn.Animator.SetBool(PawnAnimationParameters.IS_GROUNDED, isGrounded);
+						Pawn.Animator.SetFloat(PawnAnimationParameters.Speed, speed);
+						Pawn.Animator.SetBool(PawnAnimationParameters.IsGrounded, isGrounded);
 					})
 			);
 		}

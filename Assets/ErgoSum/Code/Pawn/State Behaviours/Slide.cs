@@ -36,9 +36,9 @@ namespace ErgoSum.States {
 
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			if (Pawn.IsGrounded.Value) {
-				Pawn.Animator.SetBool(PawnAnimationParameters.DASHING, true);
-				Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, false);
-				Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, false);
+				Pawn.Animator.SetBool(PawnAnimationParameters.Dash, true);
+				Pawn.Animator.SetBool(PawnAnimationParameters.Firing, false);
+				Pawn.Animator.SetBool(PawnAnimationParameters.Aiming, false);
 
 				_dashCompoundCollider.SetActive(true);
 				_standCompoundCollider.SetActive(false);
@@ -57,8 +57,6 @@ namespace ErgoSum.States {
 							mainDirection = unit.Direction.normalized;
 							mainRotation = Quaternion.LookRotation(mainDirection, Pawn.Body.transform.up);
 						}),
-					Pawn.Controller.Jump.Where(unit => unit.Release)
-						.Subscribe(unit => { stateMachine.SetBool(PawnStateParameters.Dash, false); }),
 					Pawn.Body.UpdateAsObservable()
 						.Select(_ => Vector3.zero)
 						.Merge(
@@ -74,16 +72,10 @@ namespace ErgoSum.States {
 								mainRotation,
 								_rotationSpeed * Time.deltaTime
 							);
-							if (!Pawn.IsGrounded.Value) { stateMachine.SetBool(PawnStateParameters.Dash, false); }
 						}),
-					_dashSustainTrigger.OnTriggerStayAsObservable()
-						.Buffer(Pawn.Body.FixedUpdateAsObservable())
-						.SkipUntil(Observable.Timer(TimeSpan.FromSeconds(Time.timeScale * _slideTime)))
-						.Subscribe(colliders => {
-							if (!colliders.Any()) {
-								stateMachine.SetBool(PawnStateParameters.Dash, false);
-							}
-						})
+					Pawn.Controller.Movement.Where(unit => unit.DashEnd).Select(_ => true)
+						.Merge(Pawn.IsGrounded.Where(i => !i).Select(_ => true))
+						.Subscribe(_ => { stateMachine.SetBool(PawnStateParameters.Dash, false); })
 				);
 			} else {
 				stateMachine.SetBool("Dash", false);
@@ -97,7 +89,7 @@ namespace ErgoSum.States {
 		}
 		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 			base.OnStateExit(animator, stateInfo, layerIndex);
-			Pawn.Animator.SetBool(PawnAnimationParameters.DASHING, false);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Dash, false);
 			_dashCompoundCollider.SetActive(false);
 			_standCompoundCollider.SetActive(true);
 		}

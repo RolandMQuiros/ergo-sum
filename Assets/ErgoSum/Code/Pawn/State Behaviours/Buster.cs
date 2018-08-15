@@ -71,14 +71,14 @@ namespace ErgoSum.States {
 
             AddStreams(
                 // Aiming animation
-                fireInput.Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, true); }),
+                fireInput.Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.Aiming, true); }),
                 // Holstering animation
-                holster.Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, false); }),
+                holster.Subscribe(_ => { Pawn.Animator.SetBool(PawnAnimationParameters.Aiming, false); }),
                 // Fire animation
                 Pawn.UpdateAsObservable().Select(_ => false)
                     .Merge(fireInput.Select(_ => true))
                     .Subscribe(firing => {
-                        Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, firing);
+                        Pawn.Animator.SetBool(PawnAnimationParameters.Firing, firing);
                     }),
                 // Spawn bullets
                 Fire.Subscribe(unit => {

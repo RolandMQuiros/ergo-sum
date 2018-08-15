@@ -7,24 +7,21 @@ using UniRx.Triggers;
 namespace ErgoSum {
 	public class DodgeRoll : PawnStateBehaviour {
 		[Header("Physics Properties")]
-		[SerializeField]private AnimationCurve _speedCurve;
-		[SerializeField]private AnimationCurve _boostCurve;
-		[SerializeField]private float _dodgeDistance;
-		[SerializeField]private float _dodgeTime;
+		[SerializeField]private float _dodgeSpeed;
 		[SerializeField]private float _rotationSpeed = 10f;
 
+		private bool _sustainDash;
+
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
-			Pawn.Animator.SetBool(PawnAnimationParameters.FIRING, false);
-			Pawn.Animator.SetBool(PawnAnimationParameters.AIMING, false);
-			Pawn.Animator.SetBool(PawnAnimationParameters.DASHING, true);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Firing, false);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Aiming, false);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Dash, true);
 
 			Vector3 mainDirection = new Vector3();
 			Vector3 right = Vector3.right;
-			float slideMagnitude = _dodgeDistance / _dodgeTime;
-			float slideTimer = 0f;
-			float curveTime = 0f;
 			Quaternion mainRotation = Quaternion.identity;
 
+			_sustainDash = true;
 			AddStreams(
 				// Initial movement
 				Pawn.Controller.Movement
@@ -36,11 +33,7 @@ namespace ErgoSum {
 					}),
 				Pawn.UpdateAsObservable()
 					.Subscribe(jump => {
-						slideTimer += Time.deltaTime;
-						curveTime = slideTimer / _dodgeTime;
-						
-						float curve = _speedCurve.Evaluate(curveTime);
-						Vector3 velocity = curve * mainDirection * slideMagnitude;
+						Vector3 velocity = mainDirection * _dodgeSpeed;
 						Pawn.Motor.Move(velocity * Time.deltaTime);
 						
 						Pawn.Animator.transform.rotation = Quaternion.Lerp(
@@ -48,24 +41,16 @@ namespace ErgoSum {
 							mainRotation,
 							_rotationSpeed * Time.deltaTime
 						);
-
-						if (slideTimer > _dodgeTime) {
-							stateMachine.SetBool(PawnStateParameters.Dodge, false);
-						}
 					}),
-				Pawn.Controller.Jump
-					.Subscribe(jump => {
-						if (jump.Down && _boostCurve.Evaluate(curveTime) > 0.5f) {
-							stateMachine.SetBool(PawnStateParameters.Dash, true);
-							stateMachine.SetBool(PawnStateParameters.Dodge, false);
-						}
-					})
+				Pawn.Controller.Movement.Where(unit => unit.DashEnd)
+					.Subscribe(_ => { _sustainDash = false; })
 			);
 		}
 
 		public override void OnStateExit(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			base.OnStateExit(stateMachine, stateInfo, layerIndex);
-			Pawn.Animator.SetBool(PawnAnimationParameters.DASHING, false);
+			stateMachine.SetBool(PawnStateParameters.Dash, _sustainDash);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Dash, _sustainDash);
 		}
 	}
 }

@@ -52,7 +52,7 @@ namespace ErgoSum.States {
 				// Charge animation
 				_charge.Subscribe(
 					charge => {
-						Pawn.Animator.SetInteger(PawnAnimationParameters.CHARGE, charge.Level);
+						Pawn.Animator.SetInteger(PawnAnimationParameters.Charge, charge.Level);
 					}
 				),
 				// Reset on fire

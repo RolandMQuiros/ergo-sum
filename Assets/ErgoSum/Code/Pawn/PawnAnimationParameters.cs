@@ -1,15 +1,16 @@
 namespace ErgoSum {
     public static class PawnAnimationParameters {
-        public const string SPEED = "Speed";
-        public const string AIM_X = "Aim X";
-        public const string AIM_Y = "Aim Y";
-        public const string IS_GROUNDED = "Is Grounded";
-        public const string AIR_SPEED = "Air Speed";
-        public const string CROUCHING = "Crouching";
-        public const string FIRING = "Firing";
-        public const string AIMING = "Aiming";
-        public const string CHARGE = "Charge";
-        public const string DODGING = "Dodge";
-        public const string DASHING = "Dashing";
+        public const string Speed = "Speed";
+        public const string AimX = "Aim X";
+        public const string AimY = "Aim Y";
+        public const string IsGrounded = "Is Grounded";
+        public const string AirSpeed = "Air Speed";
+        public const string Crouching = "Crouching";
+        public const string Squatting = "Squatting";
+        public const string Firing = "Firing";
+        public const string Aiming = "Aiming";
+        public const string Charge = "Charge";
+        public const string Dodge = "Dodge";
+        public const string Dash = "Dashing";
     }
 }

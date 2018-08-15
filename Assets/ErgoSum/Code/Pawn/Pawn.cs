@@ -15,12 +15,14 @@ namespace ErgoSum {
 		public IObservable<PierceUnit> Pierced { get { return _pierced; } }
 		public PawnController Controller { get; private set; }
 		public Rigidbody Body { get { return _body; } }
+		public Collider Collider { get { return _collider; } }
 		public Animator Animator { get { return _animator; } }
 		public PawnMotor Motor { get { return _motor; } }
 
 		#region Editor Fields
 		[SerializeField]private int _initialHealth;
 		[SerializeField]private Rigidbody _body;
+		[SerializeField]private Collider _collider;
 		[SerializeField]private PawnMotor _motor;
 		[SerializeField]private Animator _animator;
 		[SerializeField]private Collider _groundCheck;
