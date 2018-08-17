@@ -45,6 +45,8 @@ namespace ErgoSum {
 			_groundCheck.FixedUpdateAsObservable().Subscribe(_ => {
 				IsGrounded.Value = collisions > 0;
 				collisions = 0;
+				_stateMachine.SetBool(PawnStateParameters.IsGrounded, IsGrounded.Value);
+				_animator.SetBool(PawnAnimationParameters.IsGrounded, IsGrounded.Value);
 			});
 		}
 		private void Start() {

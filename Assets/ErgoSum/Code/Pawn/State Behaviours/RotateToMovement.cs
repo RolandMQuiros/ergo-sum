@@ -7,17 +7,17 @@ using UniRx.Triggers;
 using ErgoSum;
 
 namespace ErgoSum.States {
-	public class RunningAnimation : PawnStateBehaviour {
-		[SerializeField]private float _rotationSpeed;
+	public class RotateToMovement : PawnStateBehaviour {
+		[SerializeField]private float _rotationSpeed = 360f;
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			float speed = 0f;
-			Quaternion moveRotation = Pawn.Animator.transform.rotation;
+			Quaternion targetRotation = Pawn.Animator.transform.rotation;
 
 			AddStreams(
 				Pawn.Controller.Movement.Subscribe(unit => {
 					if (unit.Direction != Vector3.zero) {
 						speed = unit.Direction.magnitude;
-						moveRotation = Quaternion.LookRotation(unit.Direction.normalized);
+						targetRotation = Quaternion.LookRotation(unit.Direction.normalized);
 					} else {
 						speed = 0f;
 					}
@@ -25,14 +25,11 @@ namespace ErgoSum.States {
 				Pawn.UpdateAsObservable()
 					.WithLatestFrom(Pawn.IsGrounded, (_, g) => g)
 					.Subscribe(isGrounded => {
-						Pawn.Animator.transform.rotation = Quaternion.Lerp(
+						Pawn.Animator.transform.rotation = Quaternion.RotateTowards(
 							Pawn.Animator.transform.rotation,
-							moveRotation,
+							targetRotation,
 							_rotationSpeed * Time.deltaTime
 						);
-
-						Pawn.Animator.SetFloat(PawnAnimationParameters.Speed, speed);
-						Pawn.Animator.SetBool(PawnAnimationParameters.IsGrounded, isGrounded);
 					})
 			);
 		}

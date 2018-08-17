@@ -2522,6 +2522,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   _radius: 0.48
+  _restPosition: {x: 2.373, y: 1.18, z: -6.13}
 --- !u!114 &114545506823936174
 MonoBehaviour:
   m_ObjectHideFlags: 1

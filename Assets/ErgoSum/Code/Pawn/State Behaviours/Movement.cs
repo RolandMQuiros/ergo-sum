@@ -12,11 +12,12 @@ namespace ErgoSum.States {
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
             AddStreams(
                 Pawn.Controller.Movement.Subscribe(unit => {
-					if (unit.Direction != Vector3.zero && unit.DashStart) {
-						stateMachine.SetBool(PawnStateParameters.Dash, true);
-					} else {
-                        Pawn.Motor.Move(this._speed * unit.Direction * Time.deltaTime);
-					}
+					Vector3 velocity = _speed * unit.Direction;
+					float speed = velocity.magnitude;
+					Pawn.Motor.Move(velocity * Time.deltaTime);
+
+					stateMachine.SetFloat(PawnAnimationParameters.Speed, speed);
+					Pawn.Animator.SetFloat(PawnAnimationParameters.Speed, speed);
 				})
 			);
 		}

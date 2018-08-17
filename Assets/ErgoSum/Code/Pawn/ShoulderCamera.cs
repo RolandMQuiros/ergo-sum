@@ -8,16 +8,17 @@ namespace ErgoSum {
 		[SerializeField]private LayerMask _obstruction;
 		[Tooltip("The small sphere surrounding the camera preventing it from looking behind geometry faces")]
 		[SerializeField]private float _radius;
-		private Vector3 _initialPosition;
+		[Tooltip("The camera's resting position when not obstructed by terrain")]
+		[SerializeField]private Vector3 _restPosition;
 		private void OnEnable() {
 			_pivot = _pivot ?? transform.parent;
-			_initialPosition = transform.localPosition;
+			_restPosition = transform.localPosition;
 		}
 		
 		private void Update() {
 			RaycastHit hitInfo;
 			Vector3 start = _pivot.position;
-			Vector3 end = _pivot.TransformPoint(_initialPosition);
+			Vector3 end = _pivot.TransformPoint(_restPosition);
 			Vector3 diff = end - start;
 
 			float distance = diff.magnitude;
@@ -30,7 +31,7 @@ namespace ErgoSum {
 		private void OnDrawGizmos() {
 			Gizmos.color = Color.magenta;
 			Gizmos.DrawSphere(_pivot.position, _radius);
-			Gizmos.DrawSphere(_pivot.TransformPoint(_initialPosition), _radius);
+			Gizmos.DrawSphere(_pivot.TransformPoint(_restPosition), _radius);
 			Gizmos.DrawSphere(transform.position, _radius);
 		}
 	}

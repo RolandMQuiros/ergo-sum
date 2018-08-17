@@ -5,9 +5,10 @@ using UniRx.Triggers;
 
 namespace ErgoSum {
     public class Crouch : PawnStateBehaviour {
-        [SerializeField]private float _crouchTime = 0.25f;
+        [SerializeField]private float _crouchDuration = 0.25f;
         public override void OnStateEnter(Animator stateMachine, UnityEngine.AnimatorStateInfo stateInfo, int layerIndex) {
-            float crouch = 0f;
+            float crouchTime = 0f;
+            float crouch = Pawn.Animator.GetFloat(PawnAnimationParameters.Crouching);
             AddStreams(
                 Pawn.UpdateAsObservable()
                     .WithLatestFrom(Pawn.Controller.Crouch, (_, unit) => unit.Start)
@@ -21,15 +22,16 @@ namespace ErgoSum {
                         }
                     )
                     .Subscribe(crouchState => {
-                        if (crouchState.IsCrouching && crouch < _crouchTime) {
-                            crouch += Time.deltaTime;
-                            stateMachine.SetFloat(PawnStateParameters.Crouch, 1f);
-                            Pawn.Animator.SetFloat(PawnAnimationParameters.Crouching, crouch / _crouchTime);
-                        } else if (!crouchState.IsCrouching && crouchState.CanStand && crouch > 0f) {
-                            crouch -= Time.deltaTime;
-                            stateMachine.SetFloat(PawnStateParameters.Crouch, 0f);
-                            Pawn.Animator.SetFloat(PawnAnimationParameters.Crouching, crouch / _crouchTime);
+                        if ((crouchState.IsCrouching || !crouchState.CanStand) && crouchTime < _crouchDuration) {
+                            crouchTime += Time.deltaTime;
+                            crouch = crouchTime / _crouchDuration;
+                        } else if (!crouchState.IsCrouching && crouchState.CanStand && crouchTime > 0f) {
+                            crouchTime -= Time.deltaTime;
+                            crouch = crouchTime / _crouchDuration;
                         }
+
+                        stateMachine.SetFloat(PawnStateParameters.Crouch, Mathf.Round(crouch));
+                        Pawn.Animator.SetFloat(PawnAnimationParameters.Crouching, crouch);
                     })
             );
         }
