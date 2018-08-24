@@ -33,13 +33,16 @@ namespace ErgoSum.States {
 					.Subscribe(unit => {
 						if (unit.Direction == Vector3.zero) {
 							stateMachine.SetBool(PawnStateParameters.Dash, false);
+							stateMachine.SetFloat(PawnStateParameters.Speed, 0f);
+							stateMachine.SetFloat(PawnAnimationParameters.Speed, 0f);
+						} else {
+							var targetRotation = Quaternion.LookRotation(unit.Direction.normalized, Pawn.Body.transform.up);
+							direction = Vector3.RotateTowards(direction, unit.Direction.normalized, Mathf.Deg2Rad * _rotationSpeed * Time.deltaTime, 1f);
+							rotation = Quaternion.RotateTowards(rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+							
+							Pawn.Animator.transform.rotation = rotation;
+							Pawn.Motor.Move(direction * _speed * Time.deltaTime);
 						}
-						var targetRotation = Quaternion.LookRotation(unit.Direction, Pawn.Body.transform.up);
-						direction = Vector3.RotateTowards(direction, unit.Direction, Mathf.Deg2Rad * _rotationSpeed * Time.deltaTime, 1f);
-						rotation = Quaternion.RotateTowards(rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-						
-						Pawn.Animator.transform.rotation = rotation;
-						Pawn.Motor.Move(direction * _speed * Time.deltaTime);
 					}),
 				Pawn.IsGrounded.Where(i => !i).Subscribe(_ => { stateMachine.SetBool(PawnStateParameters.Dash, false); }),
 				Pawn.Motor.Movement.Where(m => m == Vector3.zero).Subscribe(_ => { stateMachine.SetBool(PawnStateParameters.Dash, false); })
