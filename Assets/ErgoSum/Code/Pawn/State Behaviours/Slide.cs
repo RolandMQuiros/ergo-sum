@@ -45,7 +45,7 @@ namespace ErgoSum.States {
 						}
 					}),
 				Pawn.IsGrounded.Where(i => !i).Subscribe(_ => { stateMachine.SetBool(PawnStateParameters.Dash, false); }),
-				Pawn.Motor.Movement.Where(m => m == Vector3.zero).Subscribe(_ => { stateMachine.SetBool(PawnStateParameters.Dash, false); })
+				Pawn.Motor.Movement.Where(m => m.Velocity == Vector3.zero).Subscribe(_ => { stateMachine.SetBool(PawnStateParameters.Dash, false); })
 			);
 
 		}

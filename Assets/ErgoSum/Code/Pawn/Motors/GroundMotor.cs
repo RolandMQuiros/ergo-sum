@@ -7,7 +7,7 @@ using UniRx.Triggers;
 
 namespace ErgoSum {
 	public class GroundMotor : PawnMotor {
-		public override IObservable<Vector3> Movement {
+		public override IObservable<MotorMoveUnit> Movement {
 			get { return _movement; }
 		}
 
@@ -15,7 +15,7 @@ namespace ErgoSum {
 		private IEnumerable<ContactPoint> _contacts;
 		private Rigidbody _rigidbody;
 		private Subject<Vector3> _moves = new Subject<Vector3>();
-		private IObservable<Vector3> _movement;
+		private IObservable<MotorMoveUnit> _movement;
 
 		[SerializeField]private Vector3[] _contactNormals;
 		private void Awake() {
@@ -36,9 +36,12 @@ namespace ErgoSum {
 					// Find a directon that is not being opposed by a terrain surface
 					Vector3 offset = !unit.Contacts.Any() ? unit.Move : Project(unit.Move);
 					Vector3 velocity = _rigidbody.position + offset;
-					return velocity;
+					return new MotorMoveUnit {
+						Velocity = velocity,
+						Contacts = _contacts
+					};
 				});
-			_movement.Subscribe(velocity => _rigidbody.MovePosition(velocity));
+			_movement.Subscribe(unit => _rigidbody.MovePosition(unit.Velocity));
 		}
 		public override void Move(Vector3 velocity) {
 			_moves.OnNext(velocity);

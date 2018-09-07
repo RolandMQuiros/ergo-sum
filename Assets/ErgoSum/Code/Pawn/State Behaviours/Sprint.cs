@@ -12,24 +12,29 @@ namespace ErgoSum {
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			Vector3 direction = Vector3.zero;
 			Quaternion rotation = Quaternion.identity;
-			float speed = stateMachine.GetFloat(PawnStateParameters.Speed);
+			float speed = 0f;// stateMachine.GetFloat(PawnStateParameters.Speed);
 			bool endDash = false;
 
 			Pawn.Animator.SetBool(PawnAnimationParameters.Aiming, false);
 			Pawn.Animator.SetBool(PawnAnimationParameters.Firing, false);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Sprint, true);
 
 			AddStreams(
 				Pawn.Controller.Movement
 					.Where(unit => unit.Direction != Vector3.zero)
 					.Take(1)
 					.Subscribe(unit => {
-						direction = unit.Direction;
+						direction = unit.Direction.normalized;
 						rotation = Quaternion.LookRotation(unit.Direction, Pawn.Body.transform.up);
+					}),
+				Pawn.Motor.Movement.Take(1)
+					.Subscribe(unit => {
+						speed = unit.Velocity.magnitude;
 					}),
 				Pawn.Controller.Movement
 					.Where(unit => !endDash)
 					.Subscribe(unit => {
-						endDash = unit.Direction == Vector3.zero || unit.DashEnd;
+						endDash = Vector3.Dot(direction, unit.Direction.normalized) <= 0f || unit.DashEnd;
 					}),
 				Pawn.UpdateAsObservable()
 					.WithLatestFrom(Pawn.Controller.Movement, (_, unit) => unit)
@@ -51,6 +56,11 @@ namespace ErgoSum {
 						}
 					})
 			);
+		}
+
+		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+			base.OnStateExit(animator, stateInfo, layerIndex);
+			Pawn.Animator.SetBool(PawnAnimationParameters.Sprint, false);
 		}
 	}
 }

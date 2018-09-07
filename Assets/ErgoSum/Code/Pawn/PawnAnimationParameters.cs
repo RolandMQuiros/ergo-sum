@@ -12,5 +12,6 @@ namespace ErgoSum {
         public const string Charge = "Charge";
         public const string Dodge = "Dodge";
         public const string Dash = "Dashing";
+        public const string Sprint = "Sprinting";
     }
 }

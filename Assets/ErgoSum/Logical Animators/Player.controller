@@ -38,6 +38,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: Camera Offset
+    m_Type: 1
+    m_DefaultFloat: -1
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Movement
@@ -188,7 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _holsterTime: 1
-  _unholsterTime: 0.05
+  _unholsterTime: 0.1
 --- !u!114 &114273458831506432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -592,6 +598,36 @@ BlendTree:
   m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 0
+--- !u!206 &206275317918815796
+BlendTree:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Standard Camera
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: 7dab93a4a396c1940ba88e42da22e8b0, type: 2}
+    m_Threshold: -1
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: Crouch
+    m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: 7400000, guid: 206e6a7e75faf4f4399e81d5d9831761, type: 2}
+    m_Threshold: 1
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: Crouch
+    m_Mirror: 0
+  m_BlendParameter: Camera Offset
+  m_BlendParameterY: Crouch
+  m_MinThreshold: -1
+  m_MaxThreshold: 1
+  m_UseAutomaticThresholds: 1
+  m_NormalizedBlendValues: 0
+  m_BlendType: 0
 --- !u!206 &206706384054938738
 BlendTree:
   m_ObjectHideFlags: 1
@@ -944,9 +980,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 3
     m_ConditionEvent: Crouch
     m_EventTreshold: 0.5
-  - m_ConditionMode: 3
-    m_ConditionEvent: Speed
-    m_EventTreshold: 15
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102340997896020222}
   m_Solo: 0
@@ -1001,7 +1034,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.15
+  m_TransitionDuration: 0
   m_TransitionOffset: 0
   m_ExitTime: 0
   m_HasExitTime: 0
@@ -1280,7 +1313,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7dab93a4a396c1940ba88e42da22e8b0, type: 2}
+  m_Motion: {fileID: 206275317918815796}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
