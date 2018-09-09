@@ -12,7 +12,7 @@ namespace ErgoSum {
 		public override void OnStateEnter(Animator stateMachine, AnimatorStateInfo stateInfo, int layerIndex) {
 			Vector3 direction = Vector3.zero;
 			Quaternion rotation = Quaternion.identity;
-			float speed = 0f;// stateMachine.GetFloat(PawnStateParameters.Speed);
+			float speed = stateMachine.GetFloat(PawnStateParameters.Speed);
 			bool endDash = false;
 
 			Pawn.Animator.SetBool(PawnAnimationParameters.Aiming, false);
@@ -26,10 +26,6 @@ namespace ErgoSum {
 					.Subscribe(unit => {
 						direction = unit.Direction.normalized;
 						rotation = Quaternion.LookRotation(unit.Direction, Pawn.Body.transform.up);
-					}),
-				Pawn.Motor.Movement.Take(1)
-					.Subscribe(unit => {
-						speed = unit.Velocity.magnitude;
 					}),
 				Pawn.Controller.Movement
 					.Where(unit => !endDash)

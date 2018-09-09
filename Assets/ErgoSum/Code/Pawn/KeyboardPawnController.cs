@@ -46,9 +46,18 @@ namespace ErgoSum {
 				.Pairwise()
 				// Only capture when movement is being applied
 				.Where(pair => pair.Current != Vector2.zero || pair.Previous - pair.Current != Vector2.zero)
-				.Select(movement => new PawnMoveUnit() {
-					Direction = Vector3.ProjectOnPlane(_camera.forward, _body.transform.up).normalized * movement.Current.y +
-						Vector3.ProjectOnPlane(_camera.right, _body.transform.up).normalized * movement.Current.x,
+				.Select(pair => {
+					float angle = Mathf.Atan2(pair.Current.y, pair.Current.x);
+					float maxX = Mathf.Abs(Mathf.Cos(angle));
+					float maxY = Mathf.Abs(Mathf.Sin(angle));
+					return new Vector2(
+						Mathf.Clamp(Mathf.Abs(pair.Current.x), 0f, maxX) * Mathf.Sign(pair.Current.x),
+						Mathf.Clamp(Mathf.Abs(pair.Current.y), 0f, maxY) * Mathf.Sign(pair.Current.y)
+					);
+				})
+				.Select(move => new PawnMoveUnit {
+					Direction = Vector3.ProjectOnPlane(_camera.forward, _body.transform.up).normalized *move.y +
+						Vector3.ProjectOnPlane(_camera.right, _body.transform.up).normalized * move.x,
 					DashStart = Input.GetButtonDown(_dashButton),
 					DashEnd = Input.GetButtonUp(_dashButton)
 				});

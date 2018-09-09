@@ -35,13 +35,19 @@ namespace ErgoSum {
 					_contactNormals = unit.Contacts.Select(c => c.normal.normalized).ToArray();
 					// Find a directon that is not being opposed by a terrain surface
 					Vector3 offset = !unit.Contacts.Any() ? unit.Move : Project(unit.Move);
-					Vector3 velocity = _rigidbody.position + offset;
+					Vector3 position = _rigidbody.position + offset;
 					return new MotorMoveUnit {
-						Velocity = velocity,
+						OldPosition = _rigidbody.position,
+						NewPosition = _rigidbody.position + offset,
+						Velocity = offset,
 						Contacts = _contacts
 					};
 				});
-			_movement.Subscribe(unit => _rigidbody.MovePosition(unit.Velocity));
+			_movement
+				.Sample(this.FixedUpdateAsObservable())
+				.Subscribe(unit => {
+					_rigidbody.MovePosition(unit.NewPosition);
+				});
 		}
 		public override void Move(Vector3 velocity) {
 			_moves.OnNext(velocity);
